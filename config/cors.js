@@ -2,7 +2,7 @@ import cors from "cors";
 
 // ১. Client URL তালিকা প্রস্তুত করা (Trailing slash সরিয়ে)
 const allowedOrigins = [
-  "https://portfolio-client-l39a.vercel.app",
+  "https://portfolio-client-9f2w.vercel.app",
   "http://localhost:5173", // Vite React-এর ডিফল্ট পোর্ট
   "http://localhost:3000",
   process.env.CLIENT_URL,
@@ -27,7 +27,10 @@ const corsOptions = {
     } else {
       console.warn(`[CORS Blocked]: ${origin}`);
       // new Error দিয়ে দিলে ব্রাউজার স্পষ্টভাবে CORS Error নির্দেশ করবে
-      callback(new Error(`CORS policy does not allow access from ${origin}`), false);
+      callback(
+        new Error(`CORS policy does not allow access from ${origin}`),
+        false,
+      );
     }
   },
   credentials: true,
