@@ -19,7 +19,7 @@ import reviewRoute from "./src/reviews/review.route.js";
 import projectRoute from "./src/projects/project.route.js";
 import contactRoute from "./src/contacts/contact.route.js";
 import serviceRoute from "./src/service/service.route.js";
-import skillRoute from "./src/skill/skill.route.js";
+import skillRoute from "./src/skills/skill.route.js";
 import testimonialRoute from "./src/testimonials/testimonial.route.js";
 import clientRoute from "./src/client/client.route.js";
 import resumeRoute from "./src/resumes/resume.route.js";
