@@ -115,7 +115,7 @@ app.use(async (req, res, next) => {
 app.use("/api/auth", userRoute);
 app.use("/api/blogs", blogRoute);
 app.use("/api/hero-banner", heroBannerRoute);
-app.use("/api/hero-banners", heroBannerRoute);
+
 
 app.use("/api/reviews", reviewRoute);
 
