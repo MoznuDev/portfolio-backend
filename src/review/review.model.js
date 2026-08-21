@@ -10,10 +10,12 @@ const reviewSchema = new mongoose.Schema(
     clientDesignation: {
       type: String,
       default: "Client",
+      trim: true,
     },
     company: {
       type: String,
       default: "",
+      trim: true,
     },
     clientImage: {
       type: String,
@@ -22,20 +24,23 @@ const reviewSchema = new mongoose.Schema(
     review: {
       type: String,
       required: [true, "Review text is required"],
+      trim: true,
     },
     rating: {
       type: Number,
-      min: 1,
-      max: 5,
+      min: [1, "Rating must be at least 1"],
+      max: [5, "Rating cannot exceed 5"],
       default: 5,
     },
     projectTitle: {
       type: String,
       default: "",
+      trim: true,
     },
     isFeatured: {
       type: Boolean,
       default: false,
+      index: true, // 👈 Featured রিভিউ দ্রুত সার্চ করার জন্য Index যোগ করা হয়েছে
     },
   },
   { timestamps: true }
