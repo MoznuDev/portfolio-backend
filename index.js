@@ -109,20 +109,36 @@ app.use(async (req, res, next) => {
 // ======================
 // Routes Setup
 // ======================
+// ======================
+// Routes Setup (Fixed Singular & Plural Paths)
+// ======================
 app.use("/api/auth", userRoute);
 app.use("/api/blogs", blogRoute);
 app.use("/api/hero-banner", heroBannerRoute);
-app.use("/api/reviews", reviewRoute);
-app.use("/api/projects", projectRoute);
-app.use("/api/contacts", contactRoute);
-app.use("/api/services", serviceRoute);
+app.use("/api/hero-banners", heroBannerRoute);
 
-// Plural and Singular skills route handle to prevent 404
+app.use("/api/reviews", reviewRoute);
+
+// Projects (Both Singular and Plural)
+app.use("/api/projects", projectRoute);
+app.use("/api/project", projectRoute);
+
+app.use("/api/contacts", contactRoute);
+
+// Services (Both Singular and Plural)
+app.use("/api/services", serviceRoute);
+app.use("/api/service", serviceRoute);
+
+// Skills (Both Singular and Plural)
 app.use("/api/skills", skillRoute);
 app.use("/api/skill", skillRoute);
 
 app.use("/api/testimonials", testimonialRoute);
+
+// Clients (Both Singular and Plural)
 app.use("/api/clients", clientRoute);
+app.use("/api/client", clientRoute);
+
 app.use("/api/stats", statsRoute);
 app.use("/api/resumes", resumeRoute);
 
