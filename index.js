@@ -133,7 +133,6 @@ app.use("/api/skill", skillRoute);
 app.use("/api/testimonials", testimonialRoute);
 
 // Clients (Both Singular and Plural)
-app.use("/api/clients", clientRoute);
 app.use("/api/client", clientRoute);
 
 app.use("/api/stats", statsRoute);
