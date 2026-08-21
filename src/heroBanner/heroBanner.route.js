@@ -5,14 +5,17 @@ import HeroBanner from "./heroBanner.model.js";
 
 const router = express.Router();
 
-// Helper Function: Cloudinary Config & Upload
-const uploadToCloudinary = (fileBuffer) => {
-  cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-  });
+// ======================
+// Cloudinary Configuration (Global Setup)
+// ======================
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
+// Helper Function: Stream Upload to Cloudinary
+const uploadToCloudinary = (fileBuffer) => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       { folder: "hero_banners" },
@@ -25,7 +28,7 @@ const uploadToCloudinary = (fileBuffer) => {
   });
 };
 
-// Multer Config
+// Multer Config (Memory Storage for Serverless)
 const storage = multer.memoryStorage();
 const upload = multer({
   storage,
@@ -56,10 +59,19 @@ router.get("/", async (req, res) => {
 // -------------------------------------------------------------
 router.post("/", upload.single("image"), async (req, res) => {
   try {
-    const { title, subtitle, description, primaryBtnText, primaryBtnLink, secondaryBtnText, secondaryBtnLink } = req.body;
+    const {
+      title,
+      subtitle,
+      description,
+      primaryBtnText,
+      primaryBtnLink,
+      secondaryBtnText,
+      secondaryBtnLink,
+      imageUrl, // যদি প্লেইন টেক্সট URL হিসেবে পাঠানো হয়
+    } = req.body;
     const file = req.file;
 
-    let uploadedImageUrl = "";
+    let uploadedImageUrl = imageUrl || "";
 
     if (file && file.buffer) {
       const cloudinaryResult = await uploadToCloudinary(file.buffer);
@@ -74,7 +86,7 @@ router.post("/", upload.single("image"), async (req, res) => {
       primaryBtnLink,
       secondaryBtnText,
       secondaryBtnLink,
-      imageUrl: uploadedImageUrl, // ✅ এখানে imageUrl নামে ডাটা পাঠাতে হবে
+      imageUrl: uploadedImageUrl,
     };
 
     const newBanner = await HeroBanner.create(bannerData);
@@ -99,7 +111,16 @@ router.post("/", upload.single("image"), async (req, res) => {
 router.put("/:id", upload.single("image"), async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, subtitle, description, primaryBtnText, primaryBtnLink, secondaryBtnText, secondaryBtnLink } = req.body;
+    const {
+      title,
+      subtitle,
+      description,
+      primaryBtnText,
+      primaryBtnLink,
+      secondaryBtnText,
+      secondaryBtnLink,
+      imageUrl,
+    } = req.body;
     const file = req.file;
 
     const existingBanner = await HeroBanner.findById(id);
@@ -110,10 +131,8 @@ router.put("/:id", upload.single("image"), async (req, res) => {
       });
     }
 
-    // ✅ ডাটাবেজে আগে থেকে থাকা imageUrl চেক করা হচ্ছে
-    let uploadedImageUrl = existingBanner.imageUrl || "";
+    let uploadedImageUrl = imageUrl || existingBanner.imageUrl || "";
 
-    // নতুন ইমেজ আপলোড করা হলে ক্লাউডিনারি-তে আপলোড হবে
     if (file && file.buffer) {
       const cloudinaryResult = await uploadToCloudinary(file.buffer);
       uploadedImageUrl = cloudinaryResult.secure_url;
@@ -129,7 +148,7 @@ router.put("/:id", upload.single("image"), async (req, res) => {
         primaryBtnLink,
         secondaryBtnText,
         secondaryBtnLink,
-        imageUrl: uploadedImageUrl, // ✅ সঠিকভাবে imageUrl ফিল্ড আপডেট হচ্ছে
+        imageUrl: uploadedImageUrl,
       },
       { new: true, runValidators: true }
     );
