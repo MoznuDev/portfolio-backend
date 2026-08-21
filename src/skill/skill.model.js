@@ -31,7 +31,7 @@ const skillSchema = new mongoose.Schema(
       default: 80,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // ✅ Document Save হওয়ার পূর্বে Auto Slug তৈরি

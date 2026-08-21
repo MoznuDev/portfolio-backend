@@ -19,7 +19,7 @@ import reviewRoute from "./src/review/review.route.js";
 import projectRoute from "./src/project/project.route.js";
 import contactRoute from "./src/contacts/contact.route.js";
 import serviceRoute from "./src/service/service.route.js";
-import skillRoute from "./src/skills/skill.route.js";
+import skillRoute from "./src/skill/skill.route.js";
 import testimonialRoute from "./src/testimonials/testimonial.route.js";
 import clientRoute from "./src/client/client.route.js";
 import resumeRoute from "./src/resumes/resume.route.js";
@@ -101,7 +101,8 @@ app.use(async (req, res, next) => {
   } catch (err) {
     res.status(500).json({
       success: false,
-      message: "Database Connection Failure. Please check IP Whitelist (0.0.0.0/0).",
+      message:
+        "Database Connection Failure. Please check IP Whitelist (0.0.0.0/0).",
     });
   }
 });
@@ -116,7 +117,6 @@ app.use("/api/auth", userRoute);
 app.use("/api/blogs", blogRoute);
 app.use("/api/hero-banner", heroBannerRoute);
 
-
 app.use("/api/review", reviewRoute);
 
 // Projects (Both Singular and Plural)
@@ -128,8 +128,7 @@ app.use("/api/contacts", contactRoute);
 app.use("/api/service", serviceRoute);
 
 // Skills (Both Singular and Plural)
-app.use("/api/skills", skillRoute);
-
+app.use("/api/skill", skillRoute);
 
 app.use("/api/testimonials", testimonialRoute);
 
