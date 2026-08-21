@@ -6,7 +6,7 @@ const serviceSchema = new mongoose.Schema(
       type: String,
       required: [true, "Service title is required"],
       trim: true,
-      unique: true, // ডুপ্লিকেট সার্ভিস তৈরি রোদ করতে
+      unique: true, 
     },
     description: {
       type: String,
@@ -14,7 +14,7 @@ const serviceSchema = new mongoose.Schema(
       trim: true,
     },
     icon: {
-      type: String, // Lucide icon name, FontAwesome class or Cloudinary Image URL
+      type: String, 
       default: "",
       trim: true,
     },
