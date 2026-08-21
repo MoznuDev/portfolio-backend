@@ -2,16 +2,19 @@ import mongoose from "mongoose";
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.DB_URL, {
-      tls: true,
-      tlsAllowInvalidCertificates: true, // ISP SSL Inspection bypass করার জন্য
-      serverSelectionTimeoutMS: 5000,   // ৫ সেকেন্ডের মধ্যে কানেক্ট না হলে এরর দেবে (অপেক্ষা করাবে না)
+    // DB_URL চেক করা
+    if (!process.env.DB_URL) {
+      throw new Error("DB_URL environment variable is not defined.");
+    }
+
+    const conn = await mongoose.connect(process.env.DB_URL, {
+      // serverSelectionTimeoutMS রাখুন যাতে কানেকশন ফেইল করলে অ্যাপ ঝুলে না থাকে
+      serverSelectionTimeoutMS: 5000,
     });
-    
-    console.log("MongoDB Connected Successfully!");
+
+    console.log(`MongoDB Connected Successfully: ${conn.connection.host}`);
   } catch (error) {
-    console.log("MongoDB Connection Failed:");
-    console.log(error.message);
+    console.error("MongoDB Connection Failed:", error.message);
     process.exit(1);
   }
 };

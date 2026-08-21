@@ -2,7 +2,8 @@ import cors from "cors";
 
 // ১. Client URL তালিকা প্রস্তুত করা (Trailing slash সরিয়ে)
 const allowedOrigins = [
-  "https://portfolio-client-one-tau.vercel.app",
+  "https://portfolio-client-l39a.vercel.app",
+  "http://localhost:5173", // Vite React-এর ডিফল্ট পোর্ট
   "http://localhost:3000",
   process.env.CLIENT_URL,
 ]
@@ -16,17 +17,17 @@ const corsOptions = {
 
     const cleanOrigin = origin.replace(/\/$/, "");
 
-    // Origin ম্যাচ করছে কি না বা Vercel Preview URL কি না চেক
+    // Origin ম্যাচ করছে কি না চেক করা
     const isAllowed =
       allowedOrigins.includes(cleanOrigin) ||
-      cleanOrigin.endsWith(".vercel.app");
+      cleanOrigin.endsWith(".vercel.app"); // Vercel-এর যেকোনো প্রিভিউ ডোমেইন এলাউ করবে
 
     if (isAllowed) {
       callback(null, true);
     } else {
       console.warn(`[CORS Blocked]: ${origin}`);
-      // new Error() না দিয়ে false দিলে ব্রাউজার নিজেই পরিষ্কার CORS Error দেখাবে, Express Server 500 দিয়ে ক্র্যাশ করবে না।
-      callback(null, false);
+      // new Error দিয়ে দিলে ব্রাউজার স্পষ্টভাবে CORS Error নির্দেশ করবে
+      callback(new Error(`CORS policy does not allow access from ${origin}`), false);
     }
   },
   credentials: true,
@@ -37,7 +38,7 @@ const corsOptions = {
     "X-Requested-With",
     "Accept",
   ],
-  optionsSuccessStatus: 200,
+  optionsSuccessStatus: 200, // পুরানো ব্রাউজার বা প্রক্সি সার্ভারের সামঞ্জস্যতার জন্য
 };
 
 export default cors(corsOptions);

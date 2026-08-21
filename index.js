@@ -9,7 +9,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // ======================
-// Routes Import (ESM Syntax)
+// Routes Import
 // ======================
 import statsRoute from "./src/stats/stats.route.js";
 import userRoute from "./src/users/user.route.js";
@@ -25,31 +25,32 @@ import clientRoute from "./src/client/client.route.js";
 import resumeRoute from "./src/resumes/resume.route.js";
 
 // ======================
-// Dynamic Allowed Origins for CORS (Fixed)
+// Dynamic CORS (All Vercel Apps Allowed)
 // ======================
 const allowedOrigins = [
-  "https://portfolio-client-one-tau.vercel.app",
+  "https://portfolio-client-l39a.vercel.app",
+  "http://localhost:5173", // Vite default port
   "http://localhost:3000",
   process.env.CLIENT_URL,
 ].filter(Boolean);
 
 const corsOptions = {
   origin: (origin, callback) => {
-    // Postman, cURL বা Server-to-Server রিকোয়েস্টের জন্য
+    // Postman or server-to-server requests
     if (!origin) return callback(null, true);
 
     const cleanOrigin = origin.replace(/\/$/, "");
 
-    const isAllowed = allowedOrigins.some(
-      (o) => o.replace(/\/$/, "") === cleanOrigin,
-    );
+    // Allow listed domains or any Vercel domain (*.vercel.app)
+    const isAllowed =
+      allowedOrigins.some((o) => o.replace(/\/$/, "") === cleanOrigin) ||
+      cleanOrigin.endsWith(".vercel.app");
 
     if (isAllowed) {
       callback(null, true);
     } else {
       console.log("CORS Blocked Origin:", origin);
-      // ❌ Error না পাঠিয়ে false পাঠালে Express crash বা next error দেবে না
-      callback(null, false);
+      callback(new Error(`CORS blocked for origin: ${origin}`), false);
     }
   },
   credentials: true,
@@ -58,37 +59,33 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-// Payload limit
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 // ======================
-// Database Connection (Vercel & Local Cached Pattern)
+// Database Connection
 // ======================
 let cachedPromise = null;
 
 async function connectDB() {
-  // ১. যদি ইতোমধ্যে কানেক্টেড থাকে, তবে সরাসরি রিটার্ন করুন
   if (mongoose.connection.readyState === 1) {
     return mongoose.connection;
   }
 
-  // ২. যদি কনেকশন প্রসেসিংয়ে থাকে, তবে নতুন করে কল না করে প্রমিজ রিইউজ করুন
   if (cachedPromise) {
     return cachedPromise;
   }
 
-  // ৩. প্রথমবার কানেকশন ট্রাই
   cachedPromise = mongoose
     .connect(process.env.DB_URL, {
-      serverSelectionTimeoutMS: 15000, // ১৫ সেকেন্ড টাইমআউট
+      serverSelectionTimeoutMS: 15000,
     })
     .then((m) => {
       console.log("MongoDB Connected Successfully");
       return m;
     })
     .catch((err) => {
-      cachedPromise = null; // ফেল করলে ক্যাশ ক্লিয়ার করুন
+      cachedPromise = null;
       console.error("MongoDB Connection Failed:", err.message);
       throw err;
     });
@@ -96,7 +93,7 @@ async function connectDB() {
   return cachedPromise;
 }
 
-// DB Connection Middleware (Serverless/Vercel Safe)
+// DB Middleware
 app.use(async (req, res, next) => {
   try {
     await connectDB();
@@ -104,7 +101,7 @@ app.use(async (req, res, next) => {
   } catch (err) {
     res.status(500).json({
       success: false,
-      message: "Database Connection Failure. Please check IP Whitelist.",
+      message: "Database Connection Failure. Please check IP Whitelist (0.0.0.0/0).",
     });
   }
 });
@@ -119,7 +116,11 @@ app.use("/api/reviews", reviewRoute);
 app.use("/api/projects", projectRoute);
 app.use("/api/contacts", contactRoute);
 app.use("/api/services", serviceRoute);
+
+// Plural and Singular skills route handle to prevent 404
+app.use("/api/skills", skillRoute);
 app.use("/api/skill", skillRoute);
+
 app.use("/api/testimonials", testimonialRoute);
 app.use("/api/clients", clientRoute);
 app.use("/api/stats", statsRoute);
@@ -137,21 +138,20 @@ app.get("/", (req, res) => {
 app.use((req, res) => {
   res.status(404).json({
     success: false,
-    message: "Route not found",
+    message: `Route not found: ${req.originalUrl}`,
   });
 });
 
 // Global Error Handler
 app.use((err, req, res, next) => {
   console.error("Global Error Log:", err.stack || err.message);
-
   res.status(err.status || 500).json({
     success: false,
     message: err.message || "Internal Server Error",
   });
 });
 
-// Local Development vs Vercel
+// Local Development Engine
 if (process.env.VERCEL !== "1") {
   connectDB()
     .then(() => {
@@ -160,10 +160,7 @@ if (process.env.VERCEL !== "1") {
       });
     })
     .catch((err) => {
-      console.error(
-        "Failed to start local server due to DB connection:",
-        err.message,
-      );
+      console.error("Failed to start local server:", err.message);
     });
 }
 
