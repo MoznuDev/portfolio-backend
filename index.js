@@ -28,7 +28,7 @@ import resumeRoute from "./src/resumes/resume.route.js";
 // Dynamic CORS (All Vercel Apps Allowed)
 // ======================
 const allowedOrigins = [
-  "https://portfolio-client-9f2w.vercel.app",
+  "https://portfolio-client-ycup.vercel.app",
   "http://localhost:5173", // Vite default port
   "http://localhost:3000",
   process.env.CLIENT_URL,
