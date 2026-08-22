@@ -15,7 +15,7 @@ import statsRoute from "./src/stats/stats.route.js";
 import userRoute from "./src/users/user.route.js";
 import blogRoute from "./src/blogs/blog.route.js";
 import heroBannerRoute from "./src/heroBanner/heroBanner.route.js";
-import reviewRoute from "./src/review/review.route.js";
+import reviewRoute from "./src/reviews/review.route.js";
 import projectRoute from "./src/project/project.route.js";
 import contactRoute from "./src/contacts/contact.route.js";
 import serviceRoute from "./src/service/service.route.js";
@@ -117,7 +117,7 @@ app.use("/api/auth", userRoute);
 app.use("/api/blogs", blogRoute);
 app.use("/api/hero-banner", heroBannerRoute);
 
-app.use("/api/review", reviewRoute);
+app.use("/api/reviews", reviewRoute);
 
 // Projects (Both Singular and Plural)
 app.use("/api/project", projectRoute);
