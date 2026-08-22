@@ -21,7 +21,7 @@ import contactRoute from "./src/contacts/contact.route.js";
 import serviceRoute from "./src/service/service.route.js";
 import skillRoute from "./src/skill/skill.route.js";
 import testimonialRoute from "./src/testimonials/testimonial.route.js";
-import clientRoute from "./src/client/client.route.js";
+import clientRoute from "./src/clients/client.route.js";
 import resumeRoute from "./src/resumes/resume.route.js";
 
 // ======================
@@ -133,7 +133,7 @@ app.use("/api/skill", skillRoute);
 app.use("/api/testimonials", testimonialRoute);
 
 // Clients (Both Singular and Plural)
-app.use("/api/client", clientRoute);
+app.use("/api/clients", clientRoute);
 
 app.use("/api/stats", statsRoute);
 app.use("/api/resumes", resumeRoute);
